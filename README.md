@@ -19,7 +19,7 @@ Together, as of 2026-08-26:
 | | |
 |---|---|
 | ATT&CK techniques observed in live data | **43** |
-| …with a demonstrated detection | **13** |
+| …with a demonstrated detection | **14** |
 
 Two things that number surfaced, both of which are criticisms of my own work:
 
@@ -33,18 +33,24 @@ Two things that number surfaced, both of which are criticisms of my own work:
   weren't talking to each other until I measured this.
 
 Then I acted on it. `gap` named T1571 as the most-observed undetected technique, so I wrote that
-rule next; then T1219, the next one it ranked. Coverage moved **26% → 30%**. Measure, rank, write
-the rule the measurement asked for, re-measure — one command at each step, and CI now fails the
-build if that number regresses, so it stays true without me.
+rule next; then T1219, then T1105 — each one the next the tool ranked. Coverage moved
+**26% → 33%**. Measure, rank, write the rule the measurement asked for, re-measure — one command
+at each step, and CI fails the build if that number regresses, so it stays true without me.
+
+**T1190 stays undetected on purpose**, and I would rather explain that than paper over it.
+Exploiting a public-facing application looks different for every product, so a single generic
+rule would have to pattern-match invented exploit strings — a rule that never fires, hiding a
+gap. It is where generic detection stops and product-specific detection has to start. Leaving it
+visible in the number is the honest choice.
 
 Both numbers come from `ruleproof gap`, so you can reproduce them rather than take my word:
 
 ```console
 $ ruleproof gap rules ../threat-intel-pipeline/vault/threats
 Observed techniques      : 43
-Demonstrated by rules    : 8
-Observed AND detected    : 13  (30%)
-Observed, NOT detected   : 30
+Demonstrated by rules    : 9
+Observed AND detected    : 14  (33%)
+Observed, NOT detected   : 29
 ```
 
 ---
@@ -73,7 +79,7 @@ misses an attack and a rule that fires on ordinary activity fail in opposite dir
 second is how a detection gets muted in production.
 
 Built on one idea: **untested is a result, not an absence.** A rule shipped with no tests fails
-the build, and ATT&CK coverage counts only techniques with a *passing test*. **102 tests · CI ·
+the build, and ATT&CK coverage counts only techniques with a *passing test*. **102 tests · 9 rules · 79 cases · CI ·
 mutation-checked** by deliberately loosening each rule to confirm the tests catch it.
 
 Using it on itself found two things worth more than the features. A test file whose rule had been
