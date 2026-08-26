@@ -19,7 +19,7 @@ Together, as of 2026-08-26:
 | | |
 |---|---|
 | ATT&CK techniques observed in live data | **43** |
-| …with a demonstrated detection | **12** |
+| …with a demonstrated detection | **13** |
 
 Two things that number surfaced, both of which are criticisms of my own work:
 
@@ -32,18 +32,19 @@ Two things that number surfaced, both of which are criticisms of my own work:
   detection knowledge instead of from the evidence I was already collecting. The two projects
   weren't talking to each other until I measured this.
 
-Then I acted on it. `gap` named T1571 as the most-observed undetected technique, so I wrote
-that rule next — coverage moved 26% → 28%. Measuring, ranking, writing the rule the measurement
-asked for, and re-measuring is the whole loop, and it is now one command at each step.
+Then I acted on it. `gap` named T1571 as the most-observed undetected technique, so I wrote that
+rule next; then T1219, the next one it ranked. Coverage moved **26% → 30%**. Measure, rank, write
+the rule the measurement asked for, re-measure — one command at each step, and CI now fails the
+build if that number regresses, so it stays true without me.
 
 Both numbers come from `ruleproof gap`, so you can reproduce them rather than take my word:
 
 ```console
 $ ruleproof gap rules ../threat-intel-pipeline/vault/threats
 Observed techniques      : 43
-Demonstrated by rules    : 7
-Observed AND detected    : 12  (28%)
-Observed, NOT detected   : 31
+Demonstrated by rules    : 8
+Observed AND detected    : 13  (30%)
+Observed, NOT detected   : 30
 ```
 
 ---
@@ -74,6 +75,12 @@ second is how a detection gets muted in production.
 Built on one idea: **untested is a result, not an absence.** A rule shipped with no tests fails
 the build, and ATT&CK coverage counts only techniques with a *passing test*. **102 tests · CI ·
 mutation-checked** by deliberately loosening each rule to confirm the tests catch it.
+
+Using it on itself found two things worth more than the features. A test file whose rule had been
+deleted reported green and exit 0 — the project's own thesis inverted, now caught. And a mutation
+*survived*: loosening a filename match from `endswith` to `contains` failed no test, because the
+near-miss negative guarding it never contained the string at all. The suite was green, the rule
+was correct, and one of its constraints was protected by a test that asserted nothing.
 
 ### [dev-crew](https://github.com/benjaminchoe123/dev-crew) — a systems-design experiment
 Four AI agents — architect, coder, tester, manager — that build software while communicating
