@@ -28,9 +28,19 @@ Two things that number surfaced, both of which are criticisms of my own work:
   common. That's partly honest (a catalogue of exploited CVEs *is* mostly T1190, and it can't
   be caught by one generic rule) but a coverage percentage that quietly omits it is flattering
   itself.
-- **Three of my six rules detect things my pipeline has never seen.** I chose them from general
+- **Two of my six rules detect things my pipeline has never seen.** I chose them from general
   detection knowledge instead of from the evidence I was already collecting. The two projects
   weren't talking to each other until I measured this.
+
+Both numbers come from `ruleproof gap`, so you can reproduce them rather than take my word:
+
+```console
+$ ruleproof gap rules ../threat-intel-pipeline/vault/threats
+Observed techniques      : 43
+Demonstrated by rules    : 6
+Observed AND detected    : 11  (26%)
+Observed, NOT detected   : 32
+```
 
 ---
 
@@ -58,7 +68,7 @@ misses an attack and a rule that fires on ordinary activity fail in opposite dir
 second is how a detection gets muted in production.
 
 Built on one idea: **untested is a result, not an absence.** A rule shipped with no tests fails
-the build, and ATT&CK coverage counts only techniques with a *passing test*. **80 tests · CI ·
+the build, and ATT&CK coverage counts only techniques with a *passing test*. **96 tests · CI ·
 mutation-checked** by deliberately loosening each rule to confirm the tests catch it.
 
 ### [dev-crew](https://github.com/benjaminchoe123/dev-crew) — a systems-design experiment
