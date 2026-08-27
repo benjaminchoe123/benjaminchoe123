@@ -19,13 +19,13 @@ Together, as of 2026-08-26:
 | | |
 |---|---|
 | ATT&CK techniques observed in live data | **43** |
-| …with a demonstrated detection | **14** |
+| …with a demonstrated detection | **15** |
 
 Two things that number surfaced, both of which are criticisms of my own work:
 
 - **The single most-observed technique has no detection at all.** T1190, *Exploit
-  Public-Facing Application*, appears in 24 threat notes — nearly three times the next most
-  common. That's partly honest (a catalogue of exploited CVEs *is* mostly T1190, and it can't
+  Public-Facing Application*, appears in 25 threat notes — over six times the next-largest
+  undetected technique, and about twice the next-most-observed one. That's partly honest (a catalogue of exploited CVEs *is* mostly T1190, and it can't
   be caught by one generic rule) but a coverage percentage that quietly omits it is flattering
   itself.
 - **Two of my rules detect things my pipeline has never seen.** I chose them from general
@@ -33,8 +33,8 @@ Two things that number surfaced, both of which are criticisms of my own work:
   weren't talking to each other until I measured this.
 
 Then I acted on it. `gap` named T1571 as the most-observed undetected technique, so I wrote that
-rule next; then T1219, then T1105 — each one the next the tool ranked. Coverage moved
-**26% → 33%**. Measure, rank, write the rule the measurement asked for, re-measure — one command
+rule next; then T1219, T1105 and T1189 — each one the next the tool ranked. Coverage moved
+**26% → 35%**. Measure, rank, write the rule the measurement asked for, re-measure — one command
 at each step, and CI fails the build if that number regresses, so it stays true without me.
 
 **T1190 stays undetected on purpose**, and I would rather explain that than paper over it.
@@ -48,9 +48,9 @@ Both numbers come from `ruleproof gap`, so you can reproduce them rather than ta
 ```console
 $ ruleproof gap rules ../threat-intel-pipeline/vault/threats
 Observed techniques      : 43
-Demonstrated by rules    : 9
-Observed AND detected    : 14  (33%)
-Observed, NOT detected   : 29
+Demonstrated by rules    : 10
+Observed AND detected    : 15  (35%)
+Observed, NOT detected   : 28
 ```
 
 ---
@@ -79,7 +79,7 @@ misses an attack and a rule that fires on ordinary activity fail in opposite dir
 second is how a detection gets muted in production.
 
 Built on one idea: **untested is a result, not an absence.** A rule shipped with no tests fails
-the build, and ATT&CK coverage counts only techniques with a *passing test*. **102 tests · 9 rules · 79 cases · CI ·
+the build, and ATT&CK coverage counts only techniques with a *passing test*. **103 tests · 10 rules · 93 cases · CI ·
 mutation-checked** by deliberately loosening each rule to confirm the tests catch it.
 
 Using it on itself found two things worth more than the features. A test file whose rule had been
@@ -87,6 +87,14 @@ deleted reported green and exit 0 — the project's own thesis inverted, now cau
 *survived*: loosening a filename match from `endswith` to `contains` failed no test, because the
 near-miss negative guarding it never contained the string at all. The suite was green, the rule
 was correct, and one of its constraints was protected by a test that asserted nothing.
+
+The rule I am most willing to defend is the one that made me re-examine a decision I had already
+published. T1189 (drive-by compromise) is delivery-side and lure-dependent in exactly the way
+T1190 is product-dependent — so if "web technique" were why I left T1190 alone, T1189 should be
+exempt too. It is not: it converges on a fixed observable regardless of the lure. The question
+turned out to be **whether a technique ends somewhere that does not depend on the product being
+attacked**, and having a rule on each side of that line is what keeps the T1190 gap a judgement
+rather than an excuse.
 
 ### [dev-crew](https://github.com/benjaminchoe123/dev-crew) — a systems-design experiment
 Four AI agents — architect, coder, tester, manager — that build software while communicating
