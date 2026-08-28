@@ -84,8 +84,16 @@ misses an attack and a rule that fires on ordinary activity fail in opposite dir
 second is how a detection gets muted in production.
 
 Built on one idea: **untested is a result, not an absence.** A rule shipped with no tests fails
-the build, and ATT&CK coverage counts only techniques with a *passing test*. **103 tests · 11 rules · 105 cases · CI ·
+the build, and ATT&CK coverage counts only techniques with a *passing test*. **122 tests · 11 rules · 105 cases · CI ·
 mutation-checked** by deliberately loosening each rule to confirm the tests catch it.
+
+Then I built the check that finds the defect I kept finding by hand. `ruleproof negatives`
+measures *distance to firing* — how many of a rule's conditions would have to flip before it
+fires. A negative one flip away is the case that fails when that condition is loosened; anything
+further is scenery. It gates CI, and on its first run it found a **filter that could never fire**
+(the rule excluded private IPs, but every indicator in it was public) and a negative that meant to
+guard a condition and guarded neither, because the string it tested with was missing two
+backslashes.
 
 Using it on itself found two things worth more than the features. A test file whose rule had been
 deleted reported green and exit 0 — the project's own thesis inverted, now caught. And a mutation
