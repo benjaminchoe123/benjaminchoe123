@@ -84,7 +84,7 @@ misses an attack and a rule that fires on ordinary activity fail in opposite dir
 second is how a detection gets muted in production.
 
 Built on one idea: **untested is a result, not an absence.** A rule shipped with no tests fails
-the build, and ATT&CK coverage counts only techniques with a *passing test*. **129 tests · 11 rules · 105 cases · CI ·
+the build, and ATT&CK coverage counts only techniques with a *passing test*. **138 tests · 11 rules · 105 cases · CI ·
 mutation-checked** by deliberately loosening each rule to confirm the tests catch it.
 
 Then I built the check that finds the defect I kept finding by hand. `ruleproof negatives`
