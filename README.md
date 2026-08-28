@@ -19,7 +19,7 @@ Together, as of 2026-08-26:
 | | |
 |---|---|
 | ATT&CK techniques observed in live data | **43** |
-| …with a demonstrated detection | **15** |
+| …with a demonstrated detection | **17** |
 
 Two things that number surfaced, both of which are criticisms of my own work:
 
@@ -31,10 +31,15 @@ Two things that number surfaced, both of which are criticisms of my own work:
 - **Two of my rules detect things my pipeline has never seen.** I chose them from general
   detection knowledge instead of from the evidence I was already collecting. The two projects
   weren't talking to each other until I measured this.
+- **Half of what I called "observed" was inference.** 53% of the technique sightings behind
+  that number come from notes I had flagged myself as going beyond their source — Agent Tesla's
+  keylogging is family knowledge, not something a ThreatFox IOC dump can show. I now export the
+  confirmed subset separately and measure against both; on confirmed evidence coverage is 50%,
+  and the *ranking* that picks my next rule changes materially.
 
 Then I acted on it. `gap` named T1571 as the most-observed undetected technique, so I wrote that
-rule next; then T1219, T1105 and T1189 — each one the next the tool ranked. Coverage moved
-**26% → 35%**. Measure, rank, write the rule the measurement asked for, re-measure — one command
+rule next; then T1219, T1105, T1189 and T1555.003 — each one the next the tool ranked.
+Coverage moved **26% → 40%**. Measure, rank, write the rule the measurement asked for, re-measure — one command
 at each step, and CI fails the build if that number regresses, so it stays true without me.
 
 **T1190 stays undetected on purpose**, and I would rather explain that than paper over it.
@@ -48,9 +53,9 @@ Both numbers come from `ruleproof gap`, so you can reproduce them rather than ta
 ```console
 $ ruleproof gap rules ../threat-intel-pipeline/vault/threats
 Observed techniques      : 43
-Demonstrated by rules    : 10
-Observed AND detected    : 15  (35%)
-Observed, NOT detected   : 28
+Demonstrated by rules    : 11
+Observed AND detected    : 17  (40%)
+Observed, NOT detected   : 26
 ```
 
 ---
@@ -79,7 +84,7 @@ misses an attack and a rule that fires on ordinary activity fail in opposite dir
 second is how a detection gets muted in production.
 
 Built on one idea: **untested is a result, not an absence.** A rule shipped with no tests fails
-the build, and ATT&CK coverage counts only techniques with a *passing test*. **103 tests · 10 rules · 93 cases · CI ·
+the build, and ATT&CK coverage counts only techniques with a *passing test*. **103 tests · 11 rules · 105 cases · CI ·
 mutation-checked** by deliberately loosening each rule to confirm the tests catch it.
 
 Using it on itself found two things worth more than the features. A test file whose rule had been
