@@ -84,7 +84,7 @@ misses an attack and a rule that fires on ordinary activity fail in opposite dir
 second is how a detection gets muted in production.
 
 Built on one idea: **untested is a result, not an absence.** A rule shipped with no tests fails
-the build, and ATT&CK coverage counts only techniques with a *passing test*. **122 tests · 11 rules · 105 cases · CI ·
+the build, and ATT&CK coverage counts only techniques with a *passing test*. **129 tests · 11 rules · 105 cases · CI ·
 mutation-checked** by deliberately loosening each rule to confirm the tests catch it.
 
 Then I built the check that finds the defect I kept finding by hand. `ruleproof negatives`
@@ -120,7 +120,7 @@ tester's `Edit` tool and called that enforcement — but `Write` replaces a whol
 the *more* complete patch of the two. The README was describing instruction-following as a
 permission model. It now names three different strengths separately, including the one that is
 still unenforced: the tester's `Bash` can write anywhere, and pattern-matching shell commands to
-pretend otherwise would be theatre. **69 tests · CI on Windows and Linux.**
+pretend otherwise would be theatre. **78 tests · CI on Windows and Linux.**
 
 ---
 
