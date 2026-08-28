@@ -104,9 +104,15 @@ rather than an excuse.
 ### [dev-crew](https://github.com/benjaminchoe123/dev-crew) — a systems-design experiment
 Four AI agents — architect, coder, tester, manager — that build software while communicating
 only through an append-only SQLite message bus, which makes any run replayable from the log.
-Separation of duties is enforced by **which tools each role is given**, not by asking the agents
-nicely: the tester can author tests but cannot edit implementation code, and the manager has no
-write access at all. **50 tests · CI on Windows and Linux.**
+Separation of duties lives in the permission layer, not in the prompt: a `can_use_tool` callback
+denies the tester any write outside `tests/`, and the manager is given no write tools at all.
+
+I had this wrong and found it by re-reading my own claim. The original design removed the
+tester's `Edit` tool and called that enforcement — but `Write` replaces a whole file, so it is
+the *more* complete patch of the two. The README was describing instruction-following as a
+permission model. It now names three different strengths separately, including the one that is
+still unenforced: the tester's `Bash` can write anywhere, and pattern-matching shell commands to
+pretend otherwise would be theatre. **69 tests · CI on Windows and Linux.**
 
 ---
 
